@@ -57,5 +57,7 @@ class arraySaver:#maybe dont need it
         """
         Updates the saved string with a new string.
         """
-        self.saved_array.append(new_string)   
+        self.saved_array.append(new_string) 
+    def set_array(self,new_array):
+        self.saved_array = new_array
   

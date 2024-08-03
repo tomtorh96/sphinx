@@ -50,15 +50,15 @@ def set_role():
 def set_user():
     # Callback function to save the role selection to Session State
     st.session_state.user = st.session_state._user
-if "role" not in st.session_state:
-    st.session_state.role = None
+# if "role" not in st.session_state:
+#     st.session_state.role = None
 
 username = st.session_state.user
 password = ""
 if st.session_state.role != "user":
     st.write("please enter your username and password")
     username =st.text_input("user name","")
-    password =st.text_input("user password","")
+    password =st.text_input("user password","",type="password")
     button = st.button("login",type="primary")
 else:
     st.title(f":flag-il: welcome {username}")
