@@ -1,5 +1,5 @@
 import streamlit as st
-from langchain.llms import OpenAI
+#from langchain.llms import OpenAI
 st.sidebar.page_link("pages/1_File_Q&A.py", label="enter a silbus")
 st.sidebar.page_link("pages/2_Chat_with_search.py", label="option 2")
 st.sidebar.page_link("pages/3_Langchain_Quickstart.py", label="option 3",disabled=True)
