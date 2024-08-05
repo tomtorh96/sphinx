@@ -17,8 +17,8 @@ with st.sidebar:
     groq_api_key = st.text_input("Groq API Key", key="chatbot_api_key", type="password",value="a")
     
 
-st.title("📝 File Q&A with Anthropic")
-uploaded_file = st.file_uploader("Upload an article", type=("txt", "pdf"))
+st.title("📝 Topics extractor")
+uploaded_file = st.file_uploader("Upload an syllabus", type=("pdf"))
 # question = st.text_input(
 #    "Ask something about the article",
 #    placeholder="Can you give me a short summary?",
@@ -82,7 +82,7 @@ if uploaded_file and groq_api_key:
             }
         ],
     model="llama3-8b-8192",
-    temperature=0.05,
+    temperature=0.02,
     max_tokens=3200,
     top_p=1,
     )
