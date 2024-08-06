@@ -9,6 +9,7 @@ import time
 # Add the parent directory to the sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from global_var import saved_array
+#TODO remove the groqkey and remove the value in the text input
 groqKey ="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"
 
 with st.sidebar:
@@ -87,18 +88,14 @@ if uploaded_file and groq_api_key:
     top_p=1,
     )
     text =chat_completion.choices[0].message.content.strip().split('\n')
-    #st.text(chat_completion.choices[0].message.content)
-    #saved_text.update_string(chat_completion.choices[0].message.content)
     topics =[line.strip("• ").strip() for line in text[1:] if line.startswith('•')]
     saved_array.set_array(topics)
-    #st.text(saved_array.get_array())
     if len(saved_array.get_array()) >0:
         with st.spinner("please wait"):
-            time.sleep(3)
+            time.sleep(2)
         st.markdown(f"process complete :smile::thumbsup:")
         if st.button("picking the topics",type="primary"):
             st.switch_page("pages/7_Show_checkbox.py")    
-#st.page_link("pages/7_Show_checkbox.py",label="checkbox")
 st.sidebar.page_link("pages/1_File_Q&A.py", label="enter a silbus",disabled=True)
 st.sidebar.page_link("pages/2_Chat_with_search.py", label="option 2")
 st.sidebar.page_link("pages/3_Langchain_Quickstart.py", label="option 3")

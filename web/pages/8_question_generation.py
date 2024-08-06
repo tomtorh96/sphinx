@@ -13,7 +13,7 @@ st.title("📝 Question generation")
 with st.sidebar:
     groq_api_key = st.text_input("Groq API Key", key="chatbot_api_key", type="password",value="a")
 st.sidebar.page_link("home.py", label="log out")
-st.sidebar.page_link("pages/1_File_Q&A.py", label="enter a silbus")
+st.sidebar.page_link("pages/1_File_Q&A.py", label="back to entering a silbus")
 
 groqKey ="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"
 prompt = f"""
@@ -25,7 +25,8 @@ Create a multiple-choice question for python programming course. only on this gi
   - "B)"
   - "C)"
   - "D)"
-
+- After that the correct answer which formated like:
+ "*Y"(where Y is the correct answers letter)
 The text should be clear and understandable. Do not include any additional text outside of the question and answers.
 
 Example:
@@ -34,7 +35,7 @@ A) 1
 B) 2
 C) 3
 D) 4
-
+*B
 """
 content = """You're a seasoned educator with a strong background in computer science,
  specializing in creating engaging and informative multi-choice questions for programming concepts.
@@ -135,6 +136,7 @@ if groq_api_key:
     max_tokens=3200,
     top_p=1,)
   text = chat_completion.choices[0].message.content.strip()
+  #TODO remove this text for the llm text
   text = """
 1. What is the capital of France?
 A) Berlin
@@ -151,9 +153,7 @@ D) Saturn
 *B
 """
   questions, answers,correct_answers = extract_questions_and_answers(text)
-  # questions = ["What is the capital of France?","Which planet is known as the Red Planet?"]
-  # answers = [["Berlin","Madrid","Paris","Rome"],["Earth","Mars","Jupiter","Saturn"]]
-  q_a =""
+  #q_a =""
   num_tabs = int(len(questions)/10)
   tab_names = [f"page {i+1}" for i in range(num_tabs + 1)]
   arrayQ = []
@@ -182,7 +182,7 @@ D) Saturn
               st.markdown(f"{chr(65 + j)}) {answer}")
          
           #st.markdown(q_a)
-        q_a =""
+        #q_a =""
 if st.button("confirm"):
   for i in range(len(arrayQ)):
       st.markdown(arrayQ[i])
