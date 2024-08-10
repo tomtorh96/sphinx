@@ -15,11 +15,12 @@ with st.sidebar:
 st.sidebar.page_link("home.py", label="log out")
 st.sidebar.page_link("pages/1_File_Q&A.py", label="back to entering a silbus")
 
+
 groqKey ="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"
 prompt = f"""
-Create a multiple-choice question for python programming course. only on this given subject{var.saved_topics.get_array()}. Format the question and answers as follows:
+Create 25 multiple-choice questions for python programming course. only on these given subjects{var.saved_topics.get_array()}. Format the question and answers as follows:
 
-- Start with "Question X:" (where X is the question number) followed by the Provide the question text.
+- Start with "X." (where X is the question number) followed by the Provide the question text.
 - List the answers in a numbered format:
   - "A)"
   - "B)"
@@ -30,12 +31,14 @@ Create a multiple-choice question for python programming course. only on this gi
 The text should be clear and understandable. Do not include any additional text outside of the question and answers.
 
 Example:
-Question 1: what is 1+1
+1. what is 1+1
 A) 1
 B) 2
 C) 3
 D) 4
 *B
+
+remove the first line of the return.
 """
 content = """You're a seasoned educator with a strong background in computer science,
  specializing in creating engaging and informative multi-choice questions for programming concepts.
@@ -55,9 +58,9 @@ def save_to_folder(arrayQ,arrayA,arrayC):
       return
   myDate = dt.datetime.now()
   name = f"Quiz-{dt.date.today()}_{myDate.hour}-{myDate.minute}-{myDate.second}"
-  quizName = f"{name}.pdf"
+  quizName = f"{name}.txt"
   answersName = f"{name}-solution.txt"
-  file_path = os.path.join("C:\\Users","Tomer","Documents","tests",quizName)#change to the path you want to got to
+  file_path = os.path.join("C:\\Users","ASUS", "Desktop","Seminar","Output",quizName)#change to the path you want to got to
   #print(file_path)
   # with open(file_path, 'w') as file:
   #     for i, question in enumerate(arrayQ):
@@ -65,28 +68,15 @@ def save_to_folder(arrayQ,arrayA,arrayC):
   #       for j, answer in enumerate(arrayA[i]):
   #           file.write(f"{chr(65 + j)}) {answer}\n")
   #       file.write("\n")
-  text=""""""
-  for i, question in enumerate(arrayQ):
-    text += f"question {i+1}) {question}\n"
-    for j, answer in enumerate(arrayA[i]):
-       text +=f"{chr(65+j)}) {answer}\n"
-    text+="\n"
-  c = canvas.Canvas(file_path, pagesize=letter)
-    # Define the text position on the page
-  text_obj = c.beginText(100, 750)
-    
-    # Add text to the text object, handling newlines
-  for line in text.split('\n'):
-        text_obj.textLine(line)
-    
-    # Draw the text object on the canvas
-  c.drawText(text_obj)
-    
-    # Finalize the PDF file
-  c.showPage()
-  c.save()
+  with open(file_path,'w') as file:
+    for i, question in enumerate(arrayQ):
+      file.write(f"question {i+1}) {question}\n")
+      for j, answer in enumerate(arrayA[i]):
+        file.write(f"{chr(65+j)}) {answer}\n")
+      file.write("\n")
+  
 
-  file_path = os.path.join("C:\\Users","Tomer","Documents","tests",answersName)
+  file_path = os.path.join("C:\\Users","ASUS", "Desktop","Seminar","Output",answersName)
   with open(file_path,'w') as file:
      file.write("the solution for the quiz:\n")
      for k,answer in enumerate(arrayC):
@@ -136,25 +126,18 @@ if groq_api_key:
     max_tokens=3200,
     top_p=1,)
   text = chat_completion.choices[0].message.content.strip()
-  #TODO remove this text for the llm text
-  text = """
-1. What is the capital of France?
-A) Berlin
-B) Madrid
-C) Paris
-D) Rome
-*C
 
-2. Which planet is known as the Red Planet?
-A) Earth
-B) Mars
-C) Jupiter
-D) Saturn
-*B
-"""
   questions, answers,correct_answers = extract_questions_and_answers(text)
   #q_a =""
-  num_tabs = int(len(questions)/10)
+  #TODO  remove print(questions)
+  col = st.columns(2)
+  if col[0].button("select all"):
+    setChceckBox(True)
+  if col[1].button("unselect all"):
+    setChceckBox(False)
+  
+  tabsize = 10
+  num_tabs = int(len(questions)/tabsize)
   tab_names = [f"page {i+1}" for i in range(num_tabs + 1)]
   arrayQ = []
   arrayA = []
@@ -162,17 +145,12 @@ D) Saturn
   # Create tabs
   tabs = st.tabs(tab_names)
   # Add content to tabs
-  for tab in tabs:
+  for t, tab in enumerate(tabs):
     with tab:
-      col = st.columns(2)
-      if col[0].button("select all"):
-        setChceckBox(True)
-      if col[1].button("unselect all"):
-        setChceckBox(False)
-      for i in range(int(len(questions)%10)):
+      for i in range(t*tabsize, min(len(questions),(t+1)*tabsize)):
         #q_a += f"Question {i + 1}: {questions[i]}\n\n"
         with st.container(height= 280):
-          if st.checkbox("label",key = i,label_visibility="collapsed",value=st.session_state.bool):
+          if st.checkbox("label",key = i ,label_visibility="collapsed",value=st.session_state.bool):
              arrayQ.append(questions[i])
              arrayA.append(answers[i])
              arrayC.append(correct_answers[i])
@@ -180,16 +158,8 @@ D) Saturn
           for j, answer in enumerate(answers[i]):
               #q_a +=f"{chr(65 + j)}) {answer}\n\n"
               st.markdown(f"{chr(65 + j)}) {answer}")
-         
           #st.markdown(q_a)
         #q_a =""
-if st.button("confirm"):
-  for i in range(len(arrayQ)):
-      st.markdown(arrayQ[i])
-      for j, answer in enumerate(arrayA[i]):
-              #q_a +=f"{chr(65 + j)}) {answer}\n\n"
-              st.markdown(f"{chr(65 + j)}) {answer}")
-  #save_to_folder(arrayQ,arrayA)
 if len(arrayQ) >0:
   disable = False
 else:
