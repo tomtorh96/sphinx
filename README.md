@@ -1,4 +1,3 @@
-# NEED TO CHANGE
 # 🎈 Sphinx
 
 ## Overview of the Sphinx
