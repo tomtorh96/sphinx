@@ -6,19 +6,25 @@ import os
 import re
 import datetime as dt
 from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import global_var as var
 st.title("📝 Question generation")
 with st.sidebar:
-    groq_api_key = st.text_input("Groq API Key", key="chatbot_api_key", type="password",value="a")
+  groq_api_key = st.text_input("Groq API Key", key="chatbot_api_key", type="password",value="a")
 st.sidebar.page_link("home.py", label="log out")
 st.sidebar.page_link("pages/1_File_Q&A.py", label="back to entering a silbus")
 
-
+if "number" not in st.session_state:
+    st.session_state.number = None
+st.session_state._number = 0
+def setbool():
+    st.session_state.number = st.session_state._number
+with st.sidebar:
+   st.session_state.number = st.slider("How many questions do you want?", 10, 60,value= 25)
+   
 groqKey ="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"
 prompt = f"""
-Create 25 multiple-choice questions for python programming course. only on these given subjects{var.saved_topics.get_array()}. Format the question and answers as follows:
+Create {st.session_state.number} multiple-choice questions for python programming course. only on these given subjects{var.saved_topics.get_array()}. Format the question and answers as follows:
 
 - Start with "X." (where X is the question number) followed by the Provide the question text.
 - List the answers in a numbered format:
@@ -52,7 +58,15 @@ def setbool():
     st.session_state.bool = st.session_state._bool
 def setChceckBox(bool):
     st.session_state.bool = bool
-
+if "once" not in st.session_state:
+    st.session_state.once = None
+st.session_state._once = False
+def setbool():
+    st.session_state.once = st.session_state._once
+with st.sidebar:
+  if st.button("confirm"):
+    st.cache_resource.clear()
+    setChceckBox(False)
 def save_to_folder(arrayQ,arrayA,arrayC):
   if arrayQ is None or arrayA is None or len(arrayQ) != len(arrayA):
       return
@@ -60,7 +74,7 @@ def save_to_folder(arrayQ,arrayA,arrayC):
   name = f"Quiz-{dt.date.today()}_{myDate.hour}-{myDate.minute}-{myDate.second}"
   quizName = f"{name}.txt"
   answersName = f"{name}-solution.txt"
-  file_path = os.path.join("C:\\Users","ASUS", "Desktop","Seminar","Output",quizName)#change to the path you want to got to
+  file_path = os.path.join("C:\\Users","Tomer", "Documents","tests",quizName)#change to the path you want to got to
   #print(file_path)
   # with open(file_path, 'w') as file:
   #     for i, question in enumerate(arrayQ):
@@ -76,11 +90,32 @@ def save_to_folder(arrayQ,arrayA,arrayC):
       file.write("\n")
   
 
-  file_path = os.path.join("C:\\Users","ASUS", "Desktop","Seminar","Output",answersName)
+  file_path = os.path.join("C:\\Users","Tomer", "Documents","tests",answersName)
   with open(file_path,'w') as file:
      file.write("the solution for the quiz:\n")
      for k,answer in enumerate(arrayC):
         file.write(f"{k+1}) {answer}\n")
+
+@st.cache_resource
+def load_model():
+  client = Groq(api_key=groqKey,)
+  chat_completion = client.chat.completions.create(
+      messages=[
+          {
+              "role": "system",
+              "content": content
+          },
+          {
+              "role": "user",
+              "content": prompt,
+          }
+      ],
+   model="llama3-8b-8192",
+   temperature=0.02,
+   max_tokens=3200,
+   top_p=1,)
+  return chat_completion
+
 def extract_questions_and_answers(text):
     # Define the regular expression patterns for questions and answers
     question_pattern = r'^\d+\.\s*(.*?)\n'
@@ -109,26 +144,9 @@ def extract_questions_and_answers(text):
                 correct_answers.append(correct_answer)
     return questions, answers,correct_answers
 if groq_api_key:
-  client = Groq(api_key=groqKey,)
-  chat_completion = client.chat.completions.create(
-        messages=[
-            {
-                "role": "system",
-                "content": content
-            },
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
-    model="llama3-8b-8192",
-    temperature=0.02,
-    max_tokens=3200,
-    top_p=1,)
-  text = chat_completion.choices[0].message.content.strip()
-
+  model = load_model()
+  text = model.choices[0].message.content.strip()
   questions, answers,correct_answers = extract_questions_and_answers(text)
-  #q_a =""
   #TODO  remove print(questions)
   col = st.columns(2)
   if col[0].button("select all"):
@@ -138,7 +156,7 @@ if groq_api_key:
   
   tabsize = 10
   num_tabs = int(len(questions)/tabsize)
-  tab_names = [f"page {i+1}" for i in range(num_tabs + 1)]
+  tab_names = [f"page {i+1}" for i in range(max(1,num_tabs))]
   arrayQ = []
   arrayA = []
   arrayC = []
@@ -168,3 +186,6 @@ with st.sidebar:
   if st.button(":printer:",disabled=disable):
       save_to_folder(arrayQ,arrayA,arrayC)
       st.success("file saved")
+  if st.button("clear cache",help="when prased the question will be cleard from your cache"):
+    st.cache_resource.clear()
+    setChceckBox(False)
