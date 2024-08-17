@@ -1,11 +1,9 @@
 import streamlit as st
-from openai import OpenAI
 from groq import Groq
 import sys
 import os
 import re
 import datetime as dt
-from reportlab.lib.pagesizes import letter
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import global_var as var
 st.title("📝 Question generation")
@@ -75,13 +73,7 @@ def save_to_folder(arrayQ,arrayA,arrayC):
   quizName = f"{name}.txt"
   answersName = f"{name}-solution.txt"
   file_path = os.path.join("C:\\Users","Tomer", "Documents","tests",quizName)#change to the path you want to got to
-  #print(file_path)
-  # with open(file_path, 'w') as file:
-  #     for i, question in enumerate(arrayQ):
-  #       file.write(f"Question {i + 1}: {question}\n")
-  #       for j, answer in enumerate(arrayA[i]):
-  #           file.write(f"{chr(65 + j)}) {answer}\n")
-  #       file.write("\n")
+
   with open(file_path,'w') as file:
     for i, question in enumerate(arrayQ):
       file.write(f"question {i+1}) {question}\n")
@@ -111,7 +103,7 @@ def load_model():
           }
       ],
    model="llama3-8b-8192",
-   temperature=0.02,
+   temperature=0.1,
    max_tokens=3200,
    top_p=1,)
   return chat_completion
@@ -147,7 +139,6 @@ if groq_api_key:
   model = load_model()
   text = model.choices[0].message.content.strip()
   questions, answers,correct_answers = extract_questions_and_answers(text)
-  #TODO  remove print(questions)
   col = st.columns(2)
   if col[0].button("select all"):
     setChceckBox(True)
@@ -155,7 +146,9 @@ if groq_api_key:
     setChceckBox(False)
   
   tabsize = 10
-  num_tabs = int(len(questions)/tabsize)
+  num_tabs = len(questions)/tabsize
+  if len(questions) % tabsize != 0:
+     num_tabs = int(num_tabs)+1
   tab_names = [f"page {i+1}" for i in range(max(1,num_tabs))]
   arrayQ = []
   arrayA = []
