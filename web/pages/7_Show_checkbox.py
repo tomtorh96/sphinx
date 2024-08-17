@@ -7,7 +7,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import global_var as var
 st.sidebar.page_link("home.py", label="log out")
-st.sidebar.page_link("pages/syllabus_extractor.py", label="back to entering a silbus")
+st.sidebar.page_link("pages/1_syllabus_extractor.py", label="back to entering a silbus")
 st.markdown("select the topics to create questions from")
 # need to see how to add 2 button to select all and unselect all
 if "bool" not in st.session_state:
