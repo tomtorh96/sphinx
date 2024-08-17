@@ -12,7 +12,7 @@ st.title("📝 Question generation")
 with st.sidebar:
   groq_api_key = st.text_input("Groq API Key", key="chatbot_api_key", type="password",value="a")
 st.sidebar.page_link("home.py", label="log out")
-st.sidebar.page_link("pages/1_syllabus_extractor.py", label="back to entering a silbus")
+st.sidebar.page_link("pages/syllabus_extractor.py", label="back to entering a silbus")
 
 if "number" not in st.session_state:
     st.session_state.number = None

@@ -1,5 +1,5 @@
 import streamlit as st
-st.sidebar.page_link("pages/1_syllabus_extractor.py", label="enter a silbus")
+st.sidebar.page_link("pages/syllabus_extractor.py", label="enter a silbus")
 st.sidebar.page_link("pages/2_Chat_with_search.py", label="option 2",disabled=True)
 st.sidebar.page_link("pages/3_Langchain_Quickstart.py", label="option 3")
 st.sidebar.page_link("pages/4_Langchain_PromptTemplate.py", label="option 4")

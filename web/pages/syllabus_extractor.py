@@ -96,7 +96,7 @@ if uploaded_file and groq_api_key:
         st.markdown(f"process complete :smile::thumbsup:")
         if st.button("picking the topics",type="primary"):
             st.switch_page("pages/7_Show_checkbox.py")    
-st.sidebar.page_link("pages/1_syllabus_extractor.py", label="enter a silbus",disabled=True)
+st.sidebar.page_link("pages/syllabus_extractor.py", label="enter a silbus",disabled=True)
 st.sidebar.page_link("pages/2_Chat_with_search.py", label="option 2")
 st.sidebar.page_link("pages/3_Langchain_Quickstart.py", label="option 3")
 st.sidebar.page_link("pages/4_Langchain_PromptTemplate.py", label="option 4")
