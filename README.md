@@ -30,3 +30,7 @@ pip install -r requirements.txt
 cd .\web\
 streamlit run home.py
 ```
+## Using our project localy
+- In the login screen you only need the password `user`
+- In the question genaration page you will need to hard coded the path in which you want to put the text files
+the path is removed but the logic is there

@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import global_var as var
 st.title("📝 Question generation")
 with st.sidebar:
-  groq_api_key = st.text_input("Groq API Key", key="chatbot_api_key", type="password",value="a")
+  groq_api_key = st.text_input("Groq API Key", key="chatbot_api_key", type="password",value="")
 st.sidebar.page_link("home.py", label="log out")
 st.sidebar.page_link("pages/1_syllabus_extractor.py", label="back to entering a silbus")
 
@@ -20,7 +20,6 @@ def setbool():
 with st.sidebar:
    st.session_state.number = st.slider("How many questions do you want?", 10, 60,value= 25)
    
-groqKey ="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"
 prompt = f"""
 Create {st.session_state.number} multiple-choice questions for python programming course. only on these given subjects{var.saved_topics.get_array()}. Format the question and answers as follows:
 
@@ -90,7 +89,7 @@ def save_to_folder(arrayQ,arrayA,arrayC):
 
 @st.cache_resource
 def load_model():
-  client = Groq(api_key=groqKey,)
+  client = Groq(api_key=groq_api_key,)
   chat_completion = client.chat.completions.create(
       messages=[
           {
@@ -171,14 +170,14 @@ if groq_api_key:
               st.markdown(f"{chr(65 + j)}) {answer}")
           #st.markdown(q_a)
         #q_a =""
-if len(arrayQ) >0:
-  disable = False
-else:
-  disable = True
-with st.sidebar:
-  if st.button(":printer:",disabled=disable):
-      save_to_folder(arrayQ,arrayA,arrayC)
-      st.success("file saved")
-  if st.button("clear cache",help="when prased the question will be cleard from your cache"):
-    st.cache_resource.clear()
-    setChceckBox(False)
+  if len(arrayQ) >0:
+    disable = False
+  else:
+    disable = True
+  with st.sidebar:
+    if st.button(":printer:",disabled=disable):
+        save_to_folder(arrayQ,arrayA,arrayC)
+        st.success("file saved")
+    if st.button("clear cache",help="when prased the question will be cleard from your cache"):
+      st.cache_resource.clear()
+      setChceckBox(False)

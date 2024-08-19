@@ -10,12 +10,11 @@ import time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from global_var import saved_array
 #TODO remove the groqkey and remove the value in the text input
-groqKey ="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"
 
 with st.sidebar:
     #anthropic_api_key = st.text_input("Anthropic API Key", key="file_qa_api_key", type="password")
     #openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password")
-    groq_api_key = st.text_input("Groq API Key", key="chatbot_api_key", type="password",value="a")
+    groq_api_key = st.text_input("Groq API Key", key="chatbot_api_key", type="password",value="")
     
 
 st.title("📝 Topics extractor")
@@ -67,7 +66,7 @@ if uploaded_file and groq_api_key:
     text = extract_text_from_pdf(uploaded_file)
     #st.text(text)
     client = Groq(
-    api_key=groqKey,)
+    api_key=groq_api_key,)
     #client = Groq(api_key=groq_api_key)
 
     #client.chat
@@ -96,7 +95,7 @@ if uploaded_file and groq_api_key:
         st.markdown(f"process complete :smile::thumbsup:")
         if st.button("picking the topics",type="primary"):
             st.switch_page("pages/7_Show_checkbox.py")    
-st.sidebar.page_link("pages/1_syllabus_extractor.py", label="enter a silbus",disabled=True)
+st.sidebar.page_link("pages/1_syllabus_extractor.py", label="question generation",disabled=True)
 st.sidebar.page_link("pages/2_Chat_with_search.py", label="option 2")
 st.sidebar.page_link("pages/3_Langchain_Quickstart.py", label="option 3")
 st.sidebar.page_link("pages/4_Langchain_PromptTemplate.py", label="option 4")
