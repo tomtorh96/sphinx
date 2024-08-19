@@ -71,7 +71,7 @@ def save_to_folder(arrayQ,arrayA,arrayC):
   name = f"Quiz-{dt.date.today()}_{myDate.hour}-{myDate.minute}-{myDate.second}"
   quizName = f"{name}.txt"
   answersName = f"{name}-solution.txt"
-  file_path = os.path.join("C:\\Users","Tomer", "Documents","tests",quizName)#change to the path you want to got to
+  file_path = "" #change to the path you want to got to
 
   with open(file_path,'w') as file:
     for i, question in enumerate(arrayQ):
@@ -81,7 +81,7 @@ def save_to_folder(arrayQ,arrayA,arrayC):
       file.write("\n")
   
 
-  file_path = os.path.join("C:\\Users","Tomer", "Documents","tests",answersName)
+  file_path = "" #change to the path you want to got to
   with open(file_path,'w') as file:
      file.write("the solution for the quiz:\n")
      for k,answer in enumerate(arrayC):
